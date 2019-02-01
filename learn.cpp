@@ -79,11 +79,13 @@ int main() {
 			int targetValue = valueTable[x][y][target];
 			vector <int> searchList = random_Permuatation();
 			for(int i : searchList) {
+				cout << i << " ";
 				if(valueTable[x][y][i] > targetValue) {
 					targetValue = valueTable[x][y][i];
 					target = i;
 				}
 			}
+			cout << endl;
 			
 			valueTable[x][y][target] = checkReward(answerTable[x][y],target);
 
