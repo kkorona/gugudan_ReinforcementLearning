@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <windows.h>
 using namespace std;
 
 const int N = 9;
@@ -9,7 +10,6 @@ int checkReward(int answer, int response) {
 }	
 
 vector < pair < int,int > > stateGen() {
-	srand(time(NULL));
 	bool check[N+1][N+1];
 	vector < pair < int,int > > ret;
 	for(int i=1; i<=N; i++) {
@@ -32,20 +32,14 @@ vector < pair < int,int > > stateGen() {
 
 vector < int > random_Permuatation() {
 	srand(time(NULL));
+	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
 	vector<int> ret;
-	bool check[N*N+1];
 
 	for(int i=2; i<=81; i++)
-		check[i] = false;
+		ret.push_back(i);
 
-	int cnt = 80;
-	while(cnt) {
-		int x = rand()%80 + 2;
-		if(check[x]) continue;
-		check[x] = true;
-		ret.push_back(x);
-		cnt--;
-	}
+	shuffle(ret.begin(),ret.end(),default_random_engine(seed));
+	Sleep(10);
 	return ret;
 }
 
@@ -73,19 +67,20 @@ int main() {
 		vector < pair < int,int > > query = stateGen();
 		out << "Generation " << generation << "\n\n";
 		int answerCount = 0; 
+		cout << generation << '\n';
 		for(auto& v : query) {
 			int x = v.first, y=v.second;
 			int target = predictionTable[x][y];
 			int targetValue = valueTable[x][y][target];
 			vector <int> searchList = random_Permuatation();
 			for(int i : searchList) {
-				cout << i << " ";
+				//cout << i << " ";
 				if(valueTable[x][y][i] > targetValue) {
 					targetValue = valueTable[x][y][i];
 					target = i;
 				}
 			}
-			cout << endl;
+			//cout << endl;
 			
 			valueTable[x][y][target] = checkReward(answerTable[x][y],target);
 
@@ -107,7 +102,7 @@ int main() {
 			out << "\nLearning finished" << '\n';
 			break;
 		}
-		out << "\nAccuracy: " << answerCount << "/81\n" << LINE;
+		out << "Accuracy: " << answerCount << "/81\n" << LINE;
 		generation++;
 	}
 	
